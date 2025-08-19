@@ -9,8 +9,6 @@ jobs:
     basic-check:
         runs-on: ubuntu-latest
         steps:
-          - name: Checkout Code
-            uses: actions/checkout@4
           - name: Validation
             run: |
               echo "Repository structure:"
