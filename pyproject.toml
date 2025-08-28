@@ -1,0 +1,91 @@
+[project]
+name = "homelab-devtools"
+version = "0.1.0"
+description = "A collection of cli tools to manage a homelab setup."
+authors = [
+    {name = "snow-man-1",email = "snowman.tech@proton.me"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.12, <3.13"
+dependencies = [
+]
+packages = [
+    { include = "homelab_devtools", from = "src" }
+]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.4.1"
+pytest-cov = "^6.2.1"
+pytest-mock = "^3.14.1"
+mypy = "^1.17.1"
+ruff = "^0.12.10"
+bandit = "^1.8.6"
+safety = "^3.6.0"
+pre-commit = "^4.3.0"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+select = [
+    "E", # pycodestyle error
+    "W", # pycodestyle warnings
+    "F", # pyflakes
+    "I", # isort
+    "B", # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "UP", # pyupgrade
+]
+ignore = [
+    "E501", # line too long, handled by the formatter
+]
+
+[tool.ruff.isort]
+known-first-party = ["homelab-devtools"]
+
+[tool.mypy]
+python_version = "3.13"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+minversion = "8.4.0"
+addopts = "-ra -q --strict-markers --strict-config"
+testpaths = ["tests"]
+log_cli = true
+log_cli_level = "INFO"
+
+[tool.coverage.run]
+source = ["src"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == \"__main__\":",
+]
+
+[tool.bandit]
+exclude_dirs = ["tests"]
