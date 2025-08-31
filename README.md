@@ -1,2 +1,2 @@
 # homelab-devtools
-A collection of cli tools to manage my homelab/dev setup.
+A cli tool with a collection of features to help managing my homelab setup.

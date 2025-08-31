@@ -3,14 +3,45 @@ on:
     push:
         branches: [main]
     pull_request:
-        branches: [main]
+        branches: [main, dev]
 
 jobs:
-    basic-check:
+    test:
         runs-on: ubuntu-latest
         steps:
-          - name: Validation
-            run: |
-              echo "Repository structure:"
-              ls -al
-              echo ""
+          - name: Checkout Code
+            id: checkout-code
+            uses: actions/checkout@v5
+
+          - name: Setup Python
+            id: setup-python
+            uses: actions/setup-python@v5.6.0
+            with:
+              python-version: "3.12"
+
+          - name: Install Poetry
+            id: install-poetry
+            uses: snok/install-poetry@v1.3.4
+            with:
+              version: latest
+              virtualenvs-create: true
+              virtualenvs-in-project: true
+              virtualenvs-path: .venv
+
+          - name: Load Cached venv
+            id: load-cached-venv
+            uses: actions/cache@v4.2.4
+            with:
+              path: .venv
+              # creates a key by using os, python version and a hash of the poetry.lock
+              key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{hashFiles('**/poetry.lock')}}
+
+          - name: Install Dependencies
+            id: install-dependencies
+            # if we have a cache then we don't install dependencies (also project is not installed as package => --no-root)
+            if: steps.load-cached-venv.outputs.cache-hit != 'true'
+            run: poetry install --no-root --no-interaction
+
+          - name: do tests for project
+            id: tests
+            run: poetry run pytest
