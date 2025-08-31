@@ -21,7 +21,7 @@ jobs:
 
           - name: Install Poetry
             id: install-poetry
-            uses: snok/install-poetry@v1.3.4
+            uses: snok/install-poetry@v1.4.1
             with:
               version: latest
               virtualenvs-create: true
