@@ -8,15 +8,25 @@ authors = [
 license = {text = "MIT"}
 readme = "README.md"
 requires-python = ">=3.12, <3.13"
-dependencies = [
-]
-packages = [
-    { include = "homelab_devtools", from = "src" }
-]
+dependencies = []
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "homelab-devtools"
+version = "0.1.0"
+description = "A collection of cli tools to manage a homelab setup."
+authors = [ "snow-man-1 <snowman.tech@proton.me>" ]
+license = "MIT"
+readme = "README.md"
+packages = [
+    { include = "homelab_devtools", from = "src" }
+]
+
+[tool.poetry.dependencies]
+python = ">=3.12, <3.13"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.1"
@@ -48,7 +58,7 @@ ignore = [
 known-first-party = ["homelab-devtools"]
 
 [tool.mypy]
-python_version = "3.13"
+python_version = "3.12"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
