@@ -1,19 +1,3 @@
-[project]
-name = "homelab-devtools"
-version = "0.1.0"
-description = "A collection of cli tools to manage a homelab setup."
-authors = [
-    {name = "snow-man-1",email = "snowman.tech@proton.me"}
-]
-license = {text = "MIT"}
-readme = "README.md"
-requires-python = ">=3.12, <3.13"
-dependencies = []
-
-[build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
-
 [tool.poetry]
 name = "homelab-devtools"
 version = "0.1.0"
@@ -25,8 +9,13 @@ packages = [
     { include = "homelab_devtools", from = "src" }
 ]
 
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
 [tool.poetry.dependencies]
 python = ">=3.12, <3.13"
+typer = "^0.17.4"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.1"
@@ -55,7 +44,7 @@ ignore = [
 ]
 
 [tool.ruff.isort]
-known-first-party = ["homelab-devtools"]
+known-first-party = ["homelab_devtools"]
 
 [tool.mypy]
 python_version = "3.12"
