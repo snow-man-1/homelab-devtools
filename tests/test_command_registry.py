@@ -7,6 +7,7 @@
 
 
 import typer
+from pytest_mock import MockerFixture
 
 from homelab_devtools.command_registry import CommandRegistry
 
@@ -17,7 +18,7 @@ class TestCommandRegistry:
         assert isinstance(cli_instance, typer.Typer)
 
     def test_registry_can_register_command(
-        self, command_registry: CommandRegistry, mock_command
+        self, command_registry: CommandRegistry, mock_command: MockerFixture
     ):
         command_registry.register("mock", mock_command.app)
         assert isinstance(command_registry.get_command("mock"), typer.Typer)

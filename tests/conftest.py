@@ -1,4 +1,7 @@
+from typing import Any, cast
+
 import pytest
+from pytest_mock import MockerFixture
 from typer import Typer
 
 from homelab_devtools.command_registry import CommandRegistry
@@ -9,11 +12,12 @@ def command_registry() -> CommandRegistry:
     return CommandRegistry()
 
 
-class MockCommand:
-    def __init__(self):
-        self.app = Typer()
+@pytest.fixture
+def mock_typer(mocker: MockerFixture) -> Any:
+    return cast(Typer, mocker.MagicMock(spec=Typer))
 
 
 @pytest.fixture
-def mock_command() -> MockCommand:
-    return MockCommand()
+def mock_command(mocker: MockerFixture, mock_typer: Any) -> MockerFixture:
+    mocker.app = mock_typer
+    return mocker
