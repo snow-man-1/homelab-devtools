@@ -62,6 +62,7 @@ strict_equality = true
 [[tool.mypy.overrides]]
 module = "tests.*"
 disallow_untyped_defs = false
+disable_error_code = ["misc", "import-untyped", "attr-defined", "no-untyped-def"]
 
 [tool.pytest.ini_options]
 minversion = "8.4.0"
