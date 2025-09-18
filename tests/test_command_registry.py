@@ -1,3 +1,7 @@
+# SPDX-License-Identifier: MIT
+"""
+Author: snow-man-1
+"""
 import typer
 from pytest_mock import MockerFixture
 

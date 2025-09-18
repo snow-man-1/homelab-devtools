@@ -1,3 +1,7 @@
+# SPDX-License-Identifier: MIT
+"""
+Author: snow-man-1
+"""
 from typing import Any
 
 from typer import Typer
