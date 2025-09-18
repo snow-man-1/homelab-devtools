@@ -2,18 +2,19 @@
 """
 Author: snow-man-1
 """
+
 from typing import Any, cast
 
 import pytest
 from pytest_mock import MockerFixture
 from typer import Typer
 
-from homelab_devtools.command_registry import CommandRegistry
+from homelab_devtools.cli_factory import CliFactory
 
 
 @pytest.fixture
-def command_registry() -> CommandRegistry:
-    return CommandRegistry()
+def cli_factory() -> CliFactory:
+    return CliFactory()
 
 
 @pytest.fixture
