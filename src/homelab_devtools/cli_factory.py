@@ -4,15 +4,14 @@ This module contains a factory which contains all command classes which needs to
 Author: snow-man-1
 """
 
-from typing import Any
+from collections.abc import Callable
 
 from typer import Typer
 
+from homelab_devtools.commands.base_command import BaseCommand
+
 
 class CliFactory:
-    def __init__(self) -> None:
-        self.typer_commands: dict[str, Any] = {}
-
     def create_cli_app(self) -> Typer:
         """Factory method to create a Typer Cli app
 
@@ -28,4 +27,21 @@ class CliFactory:
             list[Typer]: All Typer instances contained in the command classes
         """
         commands: list[Typer] = []
+
+        # TODO instantiate all commands which are available in cli
+
+        # TODO add all commands in each class to it's typer instance
+
         return commands
+
+    def get_cli_commands_of_command(self, command: BaseCommand) -> dict[str, Callable]:
+        if not command:
+            return {}
+
+        result = {}
+
+        for name, attribute in command.__class__.__dict__.items():
+            if callable(attribute) and getattr(attribute, "is_typer_command", False):
+                result[name] = attribute
+
+        return result
