@@ -29,6 +29,9 @@ class MockTyper:
 
         return decorator
 
+    def add_typer(self, typer):
+        pass
+
 
 class MockTyperCommand:
     def __init__(self, method, name):
