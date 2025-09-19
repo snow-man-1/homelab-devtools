@@ -45,3 +45,14 @@ class CliFactory:
                 result[name] = attribute
 
         return result
+
+    def prepare_typer_with_cli_commands(
+        self, command_list: dict[str, Callable], app: Typer
+    ) -> Typer:
+        if not command_list or not app:
+            return app
+
+        for command, method in command_list.items():
+            app.command(name=command)(method)
+
+        return app
