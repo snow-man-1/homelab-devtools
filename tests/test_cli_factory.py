@@ -8,7 +8,7 @@ from typer import Typer
 from homelab_devtools.cli_factory import CliFactory
 
 
-class TestTyperFactory:
+class TestCliFactory:
     """
     The typer factory should have the following behaviour:
     1. it instantiates all commands available in the cli via a method
