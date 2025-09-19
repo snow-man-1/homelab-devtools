@@ -18,15 +18,24 @@ class CliFactory:
         Returns:
             Typer: the main Typer instance conainting all sub commands out of the command objects
         """
-        return Typer()
+        main_cli_app = Typer()
+        command_list = self.setup_commands()
+        for command in command_list:
+            cli_commands = self.get_cli_commands_of_command(command)
+            prepared_typer = self.prepare_typer_with_cli_commands(
+                cli_commands, command.app
+            )
+            command.app = prepared_typer
+            main_cli_app.add_typer(prepared_typer)
+        return main_cli_app
 
-    def setup_commands(self) -> list[Typer]:
+    def setup_commands(self) -> list[BaseCommand]:
         """Instantiates all Command Objects which will be available in the cli and list all of the Typer instances
 
         Returns:
             list[Typer]: All Typer instances contained in the command classes
         """
-        commands: list[Typer] = []
+        commands: list[BaseCommand] = []
 
         # TODO instantiate all commands which are available in cli
 
