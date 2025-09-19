@@ -4,7 +4,7 @@ Test class for Unit Testing the BaseCommand class which describes the base for a
 Author: snow-man-1
 """
 
-from homelab_devtools.commands.base_command import BaseCommand
+from src.homelab_devtools.commands.base_command import BaseCommand
 
 
 class TestBaseCommand:
