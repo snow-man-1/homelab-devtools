@@ -39,8 +39,6 @@ class CliFactory:
 
         # TODO instantiate all commands which are available in cli
 
-        # TODO add all commands in each class to it's typer instance
-
         return commands
 
     def get_cli_commands_of_command(self, command: BaseCommand) -> dict[str, Callable]:
