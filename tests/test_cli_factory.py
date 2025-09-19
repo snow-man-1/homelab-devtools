@@ -3,9 +3,12 @@
 Author: snow-man-1
 """
 
+from collections.abc import Callable
+
 from typer import Typer
 
 from homelab_devtools.cli_factory import CliFactory
+from homelab_devtools.commands.base_command import BaseCommand
 
 
 class TestCliFactory:
@@ -22,3 +25,11 @@ class TestCliFactory:
     def test_factory_can_get_a_list_of_typer_objects(self, cli_factory: CliFactory):
         commands: list[Typer] = cli_factory.setup_commands()
         assert all(isinstance(command, Typer) for command in commands)
+
+    def test_get_all_cli_commands_of_command(
+        self, mock_command: BaseCommand, cli_factory: CliFactory
+    ):
+        cli_commands: dict[str, Callable] = cli_factory.get_cli_commands_of_command(
+            mock_command
+        )
+        assert len(cli_commands.keys()) == 1
