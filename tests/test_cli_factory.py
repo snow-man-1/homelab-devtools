@@ -4,6 +4,7 @@ Author: snow-man-1
 """
 
 from collections.abc import Callable
+from typing import Any
 
 from typer import Typer
 
@@ -33,3 +34,14 @@ class TestCliFactory:
             mock_command
         )
         assert len(cli_commands.keys()) == 1
+
+    def test_prepare_typer_with_cli_commands_of_command(
+        self, mock_typer: Any, cli_factory: CliFactory
+    ):
+        command_list = {"test": lambda x: None}
+        prepared_typer = cli_factory.prepare_typer_with_cli_commands(
+            command_list, mock_typer
+        )
+        assert any(
+            command.name == "test" for command in prepared_typer.registered_commands
+        )

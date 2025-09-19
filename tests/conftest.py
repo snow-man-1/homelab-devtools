@@ -3,11 +3,9 @@
 Author: snow-man-1
 """
 
-from typing import Any, cast
+from typing import Any
 
 import pytest
-from pytest_mock import MockerFixture
-from typer import Typer
 
 from homelab_devtools.cli_factory import CliFactory
 from homelab_devtools.commands.base_command import BaseCommand
@@ -19,9 +17,32 @@ def cli_factory() -> CliFactory:
     return CliFactory()
 
 
+class MockTyper:
+    def __init__(self):
+        self.registered_commands = []
+
+    def command(self, name=None):
+        def decorator(method):
+            mock_typer_command = MockTyperCommand(method, name or method.__name__)
+            self.registered_commands.append(mock_typer_command)
+            return mock_typer_command
+
+        return decorator
+
+
+class MockTyperCommand:
+    def __init__(self, method, name):
+        self.name = name
+        self.method = method
+
+    def __call__(self, *args, **kwds):
+        return self.method(*args, **kwds)
+
+
 @pytest.fixture
-def mock_typer(mocker: MockerFixture) -> Any:
-    return cast(Typer, mocker.MagicMock(spec=Typer))
+def mock_typer() -> MockTyper:
+    typer_mock = MockTyper()
+    return typer_mock
 
 
 class MockCommand(BaseCommand):

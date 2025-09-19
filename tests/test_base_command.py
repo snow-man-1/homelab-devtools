@@ -4,8 +4,6 @@ Test class for Unit Testing the BaseCommand class which describes the base for a
 Author: snow-man-1
 """
 
-from typer import Typer
-
 from homelab_devtools.commands.base_command import BaseCommand
 
 
@@ -20,5 +18,5 @@ class TestBaseCommand:
     def test_instance_has_name_and_typer_instance(self, mock_typer):
         command_group = "test"
         command = BaseCommand(command_group, app=mock_typer)
-        assert isinstance(command.app, Typer)
+        assert hasattr(command.app, "command")
         assert command.command_group == command_group
