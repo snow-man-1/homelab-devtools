@@ -24,7 +24,7 @@ pytest-mock = "^3.14.1"
 mypy = "^1.17.1"
 ruff = "^0.12.11"
 bandit = "^1.8.6"
-safety = "^3.6.0"
+safety = "^3.6.2"
 pre-commit = "^4.3.0"
 
 [tool.ruff]
