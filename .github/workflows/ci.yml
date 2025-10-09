@@ -30,7 +30,7 @@ jobs:
 
           - name: Load Cached venv
             id: load-cached-venv
-            uses: actions/cache@v4.2.4
+            uses: actions/cache@v4.3.0
             with:
               path: .venv
               # creates a key by using os, python version and a hash of the poetry.lock
