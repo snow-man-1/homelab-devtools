@@ -10,6 +10,7 @@ import pytest
 from src.homelab_devtools.cli_factory import CliFactory
 from src.homelab_devtools.commands.base_command import BaseCommand
 from src.homelab_devtools.decorators import as_typer_command
+from src.homelab_devtools.errors import BusinessLogicError, InputError, SystemError
 
 
 @pytest.fixture
@@ -55,6 +56,22 @@ class MockCommand(BaseCommand):
     @as_typer_command
     def test(self):
         return
+
+    @as_typer_command
+    def test_with_user_input_error(self):
+        raise InputError()
+
+    @as_typer_command
+    def test_with_business_logic_error(self):
+        raise BusinessLogicError()
+
+    @as_typer_command
+    def test_with_system_error(self):
+        raise SystemError()
+
+    @as_typer_command
+    def test_with_unexpected_error(self):
+        raise Exception()
 
 
 @pytest.fixture
