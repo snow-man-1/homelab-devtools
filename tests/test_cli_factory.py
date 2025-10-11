@@ -36,6 +36,11 @@ class TestCliFactory:
         )
         mocker.patch.object(
             cli_factory,
+            "wrap_cli_commands_with_error_handling",
+            return_value={"test": lambda x: None},
+        )
+        mocker.patch.object(
+            cli_factory,
             "prepare_typer_with_cli_commands",
             return_value=mock_typer,
         )
@@ -54,6 +59,21 @@ class TestCliFactory:
             mock_command
         )
         assert len(cli_commands.keys()) == 1
+
+    def test_wrap_cli_commands_with_error_handling(
+        self,
+        mock_command: BaseCommand,
+        cli_factory: CliFactory,
+    ):
+        command_list = {"test": lambda x: None}
+        cli_commands: dict[str, Callable] = (
+            cli_factory.wrap_cli_commands_with_error_handling(
+                mock_command,
+                command_list,
+            )
+        )
+
+        assert cli_commands["test"].__name__ == "error_handling_wrapper"
 
     def test_prepare_typer_with_cli_commands_of_command(
         self, mock_typer: Any, cli_factory: CliFactory
