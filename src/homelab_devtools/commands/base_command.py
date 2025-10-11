@@ -22,7 +22,7 @@ class BaseCommand:
         self.app: Typer = app or Typer()
 
     def wrap_error_handling(self, func: Callable) -> Callable:
-        def wrapper(*args: Any, **kwargs: Any) -> None:
+        def error_handling_wrapper(*args: Any, **kwargs: Any) -> None:
             try:
                 func(*args, **kwargs)
             except InputError as input_error:
@@ -41,4 +41,4 @@ class BaseCommand:
                 # everything which is unexpected
                 raise Typer_Exit(code=100) from error
 
-        return wrapper
+        return error_handling_wrapper
