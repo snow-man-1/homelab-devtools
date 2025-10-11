@@ -63,13 +63,13 @@ class TestBaseCommand:
 
         mock_typer_exit.assert_called_once_with(code=2)
 
-    def test_system_error_handling(
+    def test_external_error_handling(
         self,
         mocker: MockerFixture,
         mock_command: MockCommand,
     ):
         wrapped_typer_command = mock_command.wrap_error_handling(
-            mock_command.test_with_system_error
+            mock_command.test_with_external_error
         )
 
         mock_typer_exit = mocker.patch(

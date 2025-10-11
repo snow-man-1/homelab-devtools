@@ -23,7 +23,7 @@ class InputError(ApplicationError):
     pass
 
 
-class SystemError(ApplicationError):
-    """Class for everything which is not input or business logic error inside the application context like access to a file failed"""
+class ExternalError(ApplicationError):
+    """Class for everything which is not of the app itself like business logic or input like access to a file failed"""
 
     pass

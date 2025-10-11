@@ -9,7 +9,7 @@ from typing import Any
 from typer import Exit as Typer_Exit
 from typer import Typer
 
-from src.homelab_devtools.errors import BusinessLogicError, InputError
+from src.homelab_devtools.errors import BusinessLogicError, ExternalError, InputError
 
 
 class BaseCommand:
@@ -31,7 +31,7 @@ class BaseCommand:
             except BusinessLogicError as business_logic_error:
                 # everything related to business logic errors
                 raise Typer_Exit(code=2) from business_logic_error
-            except SystemError as system_error:
+            except ExternalError as system_error:
                 # everything which isn't business logic and input inside
                 # the application like access to files
                 raise Typer_Exit(code=3) from system_error
