@@ -22,8 +22,11 @@ class CliFactory:
         command_list = self.setup_commands()
         for command in command_list:
             cli_commands = self.get_cli_commands_of_command(command)
+            prepared_cli_commands = self.wrap_cli_commands_with_error_handling(
+                command, cli_commands
+            )
             prepared_typer = self.prepare_typer_with_cli_commands(
-                cli_commands, command.app
+                prepared_cli_commands, command.app
             )
             command.app = prepared_typer
             main_cli_app.add_typer(prepared_typer)
@@ -52,6 +55,19 @@ class CliFactory:
                 result[name] = attribute
 
         return result
+
+    def wrap_cli_commands_with_error_handling(
+        self, command: BaseCommand, command_list: dict[str, Callable]
+    ) -> dict[str, Callable]:
+        if not command_list:
+            return {}
+
+        if not command:
+            return command_list
+
+        return {
+            key: command.wrap_error_handling(func) for key, func in command_list.items()
+        }
 
     def prepare_typer_with_cli_commands(
         self, command_list: dict[str, Callable], app: Typer
