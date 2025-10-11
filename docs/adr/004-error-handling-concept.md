@@ -9,7 +9,7 @@ Since the business logic and the cli itself are encapsulated in different layers
 ## Decision
 - Error Types
   - Business Logic Errors
-  - System Errors like access to a file faile
+  - System Errors like access to a file failed
   - User Errros like bad inputs
 - These Errors will be handled through own error classes which will be handled in a central spot for each command
 - The CLI will than depending on the error type respond to the caller with a specified error code
