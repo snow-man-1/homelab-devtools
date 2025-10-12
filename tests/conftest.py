@@ -3,6 +3,8 @@
 Author: snow-man-1
 """
 
+import logging
+from collections.abc import Generator
 from typing import Any
 
 import pytest
@@ -11,6 +13,7 @@ from src.homelab_devtools.cli_factory import CliFactory
 from src.homelab_devtools.commands.base_command import BaseCommand
 from src.homelab_devtools.decorators import as_typer_command
 from src.homelab_devtools.errors import BusinessLogicError, ExternalError, InputError
+from src.homelab_devtools.logger_factory import LoggerFactory
 
 
 @pytest.fixture
@@ -74,3 +77,15 @@ class MockCommand(BaseCommand):
 def mock_command(mock_typer: Any) -> BaseCommand:
     mock_command = MockCommand("mock", app=mock_typer)
     return mock_command
+
+
+@pytest.fixture
+def logger_factory() -> Generator[LoggerFactory, None, None]:
+    reset_logger_factory()
+    yield LoggerFactory
+    reset_logger_factory()
+
+
+def reset_logger_factory():
+    LoggerFactory._setup_finished = False
+    logging.getLogger().handlers.clear()
