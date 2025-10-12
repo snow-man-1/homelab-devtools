@@ -37,3 +37,9 @@ class TestLoggerFactory:
         num_handlers_second_logger = len(second_logger.handlers)
 
         assert num_handlers_first_logger == num_handlers_second_logger
+
+    def test_get_logger_of_factory(self, logger_factory: LoggerFactory):
+        LoggerFactory.setup_logger()
+        logger = LoggerFactory.get_logger("test_logger")
+
+        assert logger.name == "test_logger"
