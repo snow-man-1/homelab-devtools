@@ -6,8 +6,18 @@ inputs:
     required: false
     default: '3.12'
 
+  fetch-depth:
+    description: Fetch depth for checkout code action
+    required: false
+    default: "1"
+
+  install-dependencies:
+    description: install dependencies in general
+    required: false
+    default: 'true'
+
   install-dev-dependencies:
-    description: install also dev dependencies with --with dev
+    description: install also dev dependencies with --with dev. Only relevant if install-dependencies is set to true.
     required: false
     default: 'false'
 
@@ -27,6 +37,8 @@ runs:
     - name: Checkout Code
       id: checkout-code
       uses: actions/checkout@v5
+      with:
+        fetch-depth: ${{ inputs.fetch-depth }}
 
     - name: Setup Python
       id: setup-python
@@ -52,6 +64,7 @@ runs:
         virtualenvs-path: .venv
 
     - name: Load Cached venv
+      if: ${{ inputs.install-dependencies }} = "true"
       id: load-cached-venv
       uses: actions/cache@v4.3.0
       with:
@@ -61,7 +74,7 @@ runs:
 
     - name: Install Dependencies
       # if we have a cache then we don't install dependencies (also project is not installed as package => --no-root)
-      if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+      if: ${{ inputs.install-dependencies }} = "true" && steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
       shell: bash
       id: install-dependencies
       run: |
@@ -77,6 +90,6 @@ runs:
         fi
 
     - name: Install Dependencies from cache
-      if: steps.cached-poetry-dependencies.outputs.cache-hit == "true"
+      if: ${{ inputs.install-dependencies }} = "true" && steps.cached-poetry-dependencies.outputs.cache-hit == "true"
       shell: bash
       run: poetry install --no-interaction
