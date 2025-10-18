@@ -1,0 +1,82 @@
+name: setup python env
+description: Checkout code and setup python env
+inputs:
+  python-version:
+    description: Python version to use
+    required: false
+    default: '3.12'
+
+  install-dev-dependencies:
+    description: install also dev dependencies with --with dev
+    required: false
+    default: 'false'
+
+  poetry-version:
+    description: version of poetry to use
+    required: false
+    default: 'latest'
+
+  no-root:
+    description: installation of dependencies with --no-root option
+    required: false
+    default: 'false'
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout Code
+      id: checkout-code
+      uses: actions/checkout@v5
+
+    - name: Setup Python
+      id: setup-python
+      uses: actions/setup-python@v6.0.0
+      with:
+        python-version: ${{ inputs.poetry-version }}
+
+    - name: Load cached poetry installation
+      id: cached-poetry
+      uses: actions/cache@v4.3.0
+      with:
+        path: ~/.local
+        key: poetry-${{ inputs.poetry-version }}-${{ runner.os }}
+
+    - name: Install Poetry
+      if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+      id: install-poetry
+      uses: snok/install-poetry@v1.4.1
+      with:
+        version: ${{ inputs.poetry-version }}
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+        virtualenvs-path: .venv
+
+    - name: Load Cached venv
+      id: load-cached-venv
+      uses: actions/cache@v4.3.0
+      with:
+        path: .venv
+        # creates a key by using os, python version and a hash of the poetry.lock
+        key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{hashFiles('**/poetry.lock')}}
+
+    - name: Install Dependencies
+      # if we have a cache then we don't install dependencies (also project is not installed as package => --no-root)
+      if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+      shell: bash
+      id: install-dependencies
+      run: |
+        NO_ROOT_FLAG=""
+        if [ "${{ inputs.no-root }}" = "true" ]; then
+          NO_ROOT_FLAG = "--no-root"
+        fi
+
+        if [ "${{ inputs.install-dev-deps }}" = "true" ]; then
+          poetry install $NO_ROOT_FLAG --no-interaction --with-dev
+        else
+          poetry install NO_ROOT_FLAG --no-interaction
+        fi
+
+    - name: Install Dependencies from cache
+      if: steps.cached-poetry-dependencies.outputs.cache-hit == "true"
+      shell: bash
+      run: poetry install --no-interaction
