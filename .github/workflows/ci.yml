@@ -1,47 +1,69 @@
-name: Base CI
+name: CI with linting and testing with coverage
 on:
     push:
         branches: [main]
     pull_request:
         branches: [main, dev]
 
+env:
+  PYTHON_VERSION: '3.12'
+
 jobs:
-    test:
-        runs-on: ubuntu-latest
-        steps:
-          - name: Checkout Code
-            id: checkout-code
-            uses: actions/checkout@v5
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Composite to checkout code and setup python env"
+        uses: ./.github/actions/checkout-and-setup-python-env
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          no-root: false
+          install-dev-dependencies: true
 
-          - name: Setup Python
-            id: setup-python
-            uses: actions/setup-python@v6.0.0
-            with:
-              python-version: "3.12"
+      - name: do tests for project
+        id: tests
+        run: poetry run pytest tests/ -v \
+              --cov=src/homelab_devtools \
+              --cov-report=xml \
+              --cov-report=term \
+              --cov-report=html
 
-          - name: Install Poetry
-            id: install-poetry
-            uses: snok/install-poetry@v1.4.1
-            with:
-              version: latest
-              virtualenvs-create: true
-              virtualenvs-in-project: true
-              virtualenvs-path: .venv
+      - name: Upload coverage artifacts
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: coverage-report
+          path: htmlcov/
+          retention-days: 30
 
-          - name: Load Cached venv
-            id: load-cached-venv
-            uses: actions/cache@v4.3.0
-            with:
-              path: .venv
-              # creates a key by using os, python version and a hash of the poetry.lock
-              key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{hashFiles('**/poetry.lock')}}
+  lint:
+    runs-on: ubuntu-latest
 
-          - name: Install Dependencies
-            id: install-dependencies
-            # if we have a cache then we don't install dependencies (also project is not installed as package => --no-root)
-            if: steps.load-cached-venv.outputs.cache-hit != 'true'
-            run: poetry install --no-root --no-interaction
+    steps:
+      - name: "Composite to checkout code and setup python env"
+        uses: ./.github/actions/checkout-and-setup-python-env
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          no-root: true
+          install-dev-dependencies: true
 
-          - name: do tests for project
-            id: tests
-            run: poetry run pytest
+      - name: Run ruff linting
+        run: poetry run ruff check .
+
+      - name: Run check formatting with ruff
+        run: poetry run ruff format --check .
+
+      - name: Run bandit (security linting)
+        run: poetry run bandit -r src/
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Composite to checkout code and setup python env"
+        uses: ./.github/actions/checkout-and-setup-python-env
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          no-root: false
+          install-dev-dependencies: false
+
+      - name: Run safety (security check for dependencies)
+        run: poetry run safety check
