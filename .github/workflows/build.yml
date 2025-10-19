@@ -1,4 +1,4 @@
-name: Build python package
+name: Test if python package can be built
 on:
     push:
         branches: [main]
@@ -12,10 +12,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Composite to checkout code
-        uses: ./.github/actions/checkout-code
+      - name: Checkout Code
+        id: checkout-code
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
+
       - name: Composite to install poetry
         uses: ./.github/actions/setup-python-env
         with:
