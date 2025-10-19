@@ -12,11 +12,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: "Composite to checkout code and install poetry"
-        uses: ./.github/actions/checkout-and-setup-python-env
+      - name: Composite to checkout code
+        uses: ./.github/actions/checkout-code
+        with:
+          fetch-depth: 0
+      - name: Composite to install poetry
+        uses: ./.github/actions/setup-python-env
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-          fetch-depth: 0
           install-dependencies: false
 
       - name: Build package

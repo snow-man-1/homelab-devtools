@@ -12,7 +12,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: "Composite to checkout code and setup python env"
+      - name: Checkout code
+        uses: ./.github/actions/checkout-code
+
+      - name: Composite to setup python env
         uses: ./.github/actions/checkout-and-setup-python-env
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -39,8 +42,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: "Composite to checkout code and setup python env"
-        uses: ./.github/actions/checkout-and-setup-python-env
+      - name: Composite to checkout code
+        uses: ./github/actions/checkout-code
+
+      - name: Composite to setup python env
+        uses: ./.github/actions/setup-python-env
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           no-root: true
@@ -58,7 +64,10 @@ jobs:
   security:
     runs-on: ubuntu-latest
     steps:
-      - name: "Composite to checkout code and setup python env"
+      - name: Composite to checkout code
+        run: ./.github/actions/checkout-code
+
+      - name: Composite to setup python env
         uses: ./.github/actions/checkout-and-setup-python-env
         with:
           python-version: ${{ env.PYTHON_VERSION }}

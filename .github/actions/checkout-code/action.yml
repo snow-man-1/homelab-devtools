@@ -1,0 +1,16 @@
+name: Checkout source code
+description: Checkout source code
+inputs:
+  fetch-depth:
+    description: Fetch depth for checkout code action
+    required: false
+    default: "1"
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout Code
+      id: checkout-code
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: ${{ inputs.fetch-depth }}

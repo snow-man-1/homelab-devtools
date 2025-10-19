@@ -6,11 +6,6 @@ inputs:
     required: false
     default: '3.12'
 
-  fetch-depth:
-    description: Fetch depth for checkout code action
-    required: false
-    default: "1"
-
   install-dependencies:
     description: install dependencies in general
     required: false
@@ -34,12 +29,6 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Checkout Code
-      id: checkout-code
-      uses: actions/checkout@v5
-      with:
-        fetch-depth: ${{ inputs.fetch-depth }}
-
     - name: Setup Python
       id: setup-python
       uses: actions/setup-python@v6.0.0
