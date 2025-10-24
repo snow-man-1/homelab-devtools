@@ -67,15 +67,15 @@ runs:
       shell: bash
       id: install-dependencies
       run: |
-        NO_ROOT_FLAG=""
+        set NO_ROOT_FLAG=""
         if [ "${{ inputs.no-root }}" = "true" ]; then
-          NO_ROOT_FLAG = "--no-root"
+          set NO_ROOT_FLAG = "--no-root"
         fi
 
         if [ "${{ inputs.install-dev-deps }}" = "true" ]; then
           poetry install $NO_ROOT_FLAG --no-interaction --with-dev
         else
-          poetry install NO_ROOT_FLAG --no-interaction
+          poetry install $NO_ROOT_FLAG --no-interaction
         fi
 
     - name: Install Dependencies from cache
