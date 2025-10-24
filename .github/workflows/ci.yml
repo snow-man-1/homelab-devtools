@@ -71,7 +71,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Composite to setup python env
-        uses: ./.github/actions/checkout-and-setup-python-env
+        uses: ./.github/actions/setup-python-env
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           no-root: false
