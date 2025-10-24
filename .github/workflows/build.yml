@@ -1,0 +1,35 @@
+name: Test if python package can be built
+on:
+    push:
+        branches: [main, dev]
+    pull_request:
+        branches: [main, dev]
+
+env:
+  PYTHON_VERSION: '3.12'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        id: checkout-code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Composite to install poetry
+        uses: ./.github/actions/setup-python-env
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          install-dependencies: false
+
+      - name: Build package
+        run: poetry build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+          retention-days: 7

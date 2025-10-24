@@ -34,7 +34,8 @@ repos:
     hooks:
       - id: tests
         name: tests
-        entry: poetry run pytest
+        entry: poetry
+        args: [run, pytest]
         language: system
         pass_filenames: false
         always_run: true
