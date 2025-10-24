@@ -25,7 +25,9 @@ jobs:
 
       - name: do tests for project
         id: tests
-        run: poetry run pytest tests/ -v \
+        run: |
+          export PYTHONPATH=$PYTHONPATH:$(pwd)/src
+          poetry run pytest tests/ -v \
               --cov=src/homelab_devtools \
               --cov-report=xml \
               --cov-report=term \
