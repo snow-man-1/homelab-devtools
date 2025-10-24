@@ -1,9 +1,9 @@
 name: Test if python package can be built
 on:
     push:
-        branches: [main]
+        branches: [main, dev]
     pull_request:
-        branches: [main]
+        branches: [main, dev]
 
 env:
   PYTHON_VERSION: '3.12'
