@@ -1,0 +1,125 @@
+name: Build a release pull request
+on:
+    # trigger manually
+    workflow_dispatch:
+      inputs:
+        version:
+          description: Next version number
+          required: true
+          type: string
+
+        pre-release:
+          description: Is this release a pre-release?
+          required: false
+          type: boolean
+          default: false
+
+env:
+  PYTHON_VERSION: '3.12'
+
+permissions:
+  contents: write
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+
+  build:
+    uses: ./.github/workflows/build.yml
+    needs: ci
+
+  release-pull-request:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        id: checkout-code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Composite to install poetry
+        uses: ./.github/actions/setup-python-env
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          install-dependencies: false
+
+      - name: Validate the format of the given version
+        run: |
+          VERSION="${{github.event.inputs.version}}"
+          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-rc\.[0-9]+)?$ ]]; then
+            echo "Invalid version format: $VERSION"
+            echo "Expected format: Major.Minor.Patch (for example 0.0.0) or Major.Minor.Patch-rc.Number (for example 0.0.0-rc.1)"
+            exit 1
+          fi
+
+          echo "Version format valid: $VERSION"
+
+      - name: Check if this version exists already as tag
+        run: |
+          VERSION=${{ github.event.inputs.version }}
+          # pipe logs from stdout and stderr into /dev/null
+          if git rev-parse "v$VERSION" >/dev/null 2>&1; then
+            echo "Tag $VERSION already exists."
+            exit 1
+          fi
+
+          echo "Tag $VERSION doesn't exists yet."
+      
+      - name: Create release branch
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          git checkout -b release/v${VERSION}
+
+      - name: Update Version in pyproject.toml
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          poetry version $VERSION
+          echo "Updated version in pyproject.toml to $VERSION"
+
+      - name: Generate a changelog
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+
+          echo "# Changelog" > CHANGELOG.tmp
+          echo "" >> CHANGELOG.tmp
+          echo "## [${VERSION}] - $(date +%Y-%m-%d)" >> CHANGELOG.tmp
+          echo "" >> CHANGELOG.tmp
+
+          if [ -n "$LAST_TAG" ]; then
+            git log ${LAST_TAG}..HEAD --pretty=format:"- %s (%h)" >> CHANGELOG.tmp
+          else
+            echo "- Initial release" >> CHANGELOG.tmp
+          fi
+
+          echo "" >> CHANGELOG.tmp
+          [ -f CHANGELOG.md ] && tail -n +2 CHANGELOG.md >> CHANGELOG.tmp
+          mv CHANGELOG.tmp CHANGELOG.md
+
+      - name: Commit the new version
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add pyproject.toml CHANGELOG.md
+          git commit -m "chore(release): bump version to $VERSION"
+          echo "Commited version bump locally"
+
+      - name: Push release branch
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          git push origin release/v${VERSION}
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: main
+          branch: release/v${{ github.event.inputs.version }}
+          title: "Release ${{ github.event.inputs.version }}"
+          body: "Automated release PR for version ${{ github.event.input.version }}"
+
+
+  

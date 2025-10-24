@@ -1,0 +1,72 @@
+name: Create Github Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+    branches:
+      - main
+env:
+  PYTHON_VERSION: '3.12'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        id: checkout-code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Composite to install poetry
+        uses: ./.github/actions/setup-python-env
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          install-dependencies: false
+
+      - name: Determine pre-release
+        run: |
+          if [[ "${GITHUB_REF_NAME}" == *"-rc"* ]]; then
+            echo "IS_PRE_RELEASE=true" >> GITHUB_ENV
+          else
+            echo "IS_PRE_RELEASE=false" >> GITHUB_ENV
+          fi
+
+      - name: Build package with new version
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          poetry build
+          echo "Python package built with version $VERSION"
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Built artifacts >> $GTIHUB_STEP_SUMMARY"
+          ls -lh dist/ >> $GITHUB_STEP_SUMMARY
+
+      - name: Verify version of package
+        run: |
+          VERSION="${{ github.ref_name }}"
+          if ls dist/*${VERSION}*.whl 1> /dev/null >2&1; then
+            echo "Version was built correctly"
+          else
+            echo "Version does not match!"
+            echo "Expected: $VERSION"
+            echo "Got:"
+            ls dist/*${VERSION}*.whl
+            exit 1
+          fi
+
+      - name: Create github release
+        id: create-release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          body: "Automated release created after merge."
+          draft: false
+          prerelease: ${{ env.IS_PRE_RELEASE }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
