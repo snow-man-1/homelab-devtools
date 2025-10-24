@@ -33,7 +33,7 @@ runs:
       id: setup-python
       uses: actions/setup-python@v6.0.0
       with:
-        python-version: ${{ inputs.poetry-version }}
+        python-version: ${{ inputs.python-version }}
 
     - name: Load cached poetry installation
       id: cached-poetry
