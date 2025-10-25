@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "homelab-devtools"
-version = "0.1.0"
+version = "0.0.0-rc.4"
 description = "A collection of cli tools to manage a homelab setup."
 authors = [ "snow-man-1 <snowman.tech@proton.me>" ]
 license = "MIT"
