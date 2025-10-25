@@ -19,13 +19,14 @@ env:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   ci:
     uses: ./.github/workflows/ci.yml
 
   build:
-    uses: ./.github/workflows/build.yml
+    uses: ./.github/workflows/test-build.yml
     needs: ci
 
   release-pull-request:
@@ -112,14 +113,19 @@ jobs:
           VERSION="${{ github.event.inputs.version }}"
           git push origin release/v${VERSION}
 
+      - name: Return to original branch
+        run: |
+          git checkout ${{ github.ref_name }}
+        
       - name: Create pull request
-        uses: peter-evans/create-pull-request@v7
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          base: main
-          branch: release/v${{ github.event.inputs.version }}
-          title: "Release ${{ github.event.inputs.version }}"
-          body: "Automated release PR for version ${{ github.event.input.version }}"
-
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=${{ github.event.inputs.version }}
+          gh pr create \
+            --base main \
+            --head release/v${VERSION} \
+            --title "Release ${VERSION}" \
+            --body "Automated release Pull Request for version ${VERSION}"
 
   
