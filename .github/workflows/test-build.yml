@@ -4,6 +4,7 @@ on:
         branches: [main, dev]
     pull_request:
         branches: [main, dev]
+    workflow_call:
 
 env:
   PYTHON_VERSION: '3.12'
