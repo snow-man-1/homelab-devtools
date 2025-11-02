@@ -8,8 +8,8 @@ from typing import Any
 
 from pytest_mock import MockerFixture
 
-from src.homelab_devtools.cli_factory import CliFactory
-from src.homelab_devtools.commands.base_command import BaseCommand
+from homelab_devtools.cli_factory import CliFactory
+from homelab_devtools.commands.base_command import BaseCommand
 from tests.conftest import MockCommand, MockTyper
 
 
@@ -27,7 +27,7 @@ class TestCliFactory:
         mock_typer: MockTyper,
         mock_command: MockCommand,
     ):
-        mocker.patch("src.homelab_devtools.cli_factory.Typer", return_value=mock_typer)
+        mocker.patch("homelab_devtools.cli_factory.Typer", return_value=mock_typer)
         mocker.patch.object(cli_factory, "setup_commands", return_value=[mock_command])
         mocker.patch.object(
             cli_factory,

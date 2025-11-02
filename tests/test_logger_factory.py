@@ -6,7 +6,7 @@ Author: snow-man-1
 
 import logging
 
-from src.homelab_devtools.logger_factory import LoggerFactory
+from homelab_devtools.logger_factory import LoggerFactory
 
 
 class TestLoggerFactory:
