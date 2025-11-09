@@ -5,8 +5,7 @@ on:
     tags:
       - "v*.*.*"
       - "v*.*.*-*"
-    branches:
-      - main
+
 env:
   PYTHON_VERSION: '3.12'
 
@@ -30,9 +29,15 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
           install-dependencies: false
 
+      - name: Extract version of tag
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "Extracted version: ${VERSION}"
+
       - name: Determine pre-release
         run: |
-          if [[ "${GITHUB_REF_NAME}" == *"-rc"* ]]; then
+          if [[ "$VERSION" == *"-rc"* ]]; then
             echo "IS_PRE_RELEASE=true" >> GITHUB_ENV
           else
             echo "IS_PRE_RELEASE=false" >> GITHUB_ENV
@@ -40,7 +45,7 @@ jobs:
 
       - name: Build package with new version
         run: |
-          VERSION="${{ github.event.inputs.version }}"
+          VERSION="$VERSION"
           poetry build
           echo "Python package built with version $VERSION"
           echo "" >> $GITHUB_STEP_SUMMARY
@@ -49,8 +54,8 @@ jobs:
 
       - name: Verify version of package
         run: |
-          VERSION="${{ github.ref_name }}"
-          if ls dist/*${VERSION}*.whl 1> /dev/null >2&1; then
+          VERSION="$VERSION"
+          if ls dist/*${VERSION}*.whl 1> /dev/null 2>&1; then
             echo "Version was built correctly"
           else
             echo "Version does not match!"
@@ -68,6 +73,6 @@ jobs:
           name: Release ${{ github.ref_name }}
           body: "Automated release created after merge."
           draft: false
-          prerelease: ${{ env.IS_PRE_RELEASE }}
+          prerelease: $IS_PRE_RELEASE
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
