@@ -9,6 +9,9 @@ packages = [
     { include = "homelab_devtools", from = "src" }
 ]
 
+[tool.poetry.scripts]
+homelab = "homelab_devtools.main:start_cli"
+
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
