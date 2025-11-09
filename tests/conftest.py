@@ -24,12 +24,21 @@ def cli_factory() -> CliFactory:
 class MockTyper:
     def __init__(self):
         self.registered_commands = []
+        self.registered_callback = None
 
     def command(self, name=None):
         def decorator(method):
             mock_typer_command = MockTyperCommand(method, name or method.__name__)
             self.registered_commands.append(mock_typer_command)
             return mock_typer_command
+
+        return decorator
+
+    def callback(self):
+        def decorator(method):
+            mock_typer_callback = MockTyperCommand(method, method.__name__)
+            self.registered_callback = mock_typer_callback
+            return mock_typer_callback
 
         return decorator
 

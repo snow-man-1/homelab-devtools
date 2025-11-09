@@ -27,7 +27,10 @@ class TestCliFactory:
         mock_typer: MockTyper,
         mock_command: MockCommand,
     ):
-        mocker.patch("homelab_devtools.cli_factory.Typer", return_value=mock_typer)
+        mocker.patch(
+            "homelab_devtools.commands.global_command.typer.Typer",
+            return_value=mock_typer,
+        )
         mocker.patch.object(cli_factory, "setup_commands", return_value=[mock_command])
         mocker.patch.object(
             cli_factory,
