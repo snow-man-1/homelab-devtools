@@ -6,7 +6,11 @@ Author: snow-man-1
 
 import typer
 
+from homelab_devtools import __version__
 from homelab_devtools.commands.base_command import BaseCommand
+from homelab_devtools.logger_factory import LoggerFactory
+
+logger = LoggerFactory.get_logger(__name__)
 
 
 class GlobalCommand(BaseCommand):
@@ -28,5 +32,5 @@ class GlobalCommand(BaseCommand):
         ),
     ) -> None:
         if version:
-            typer.echo("Test version: 0.0.0")
+            typer.echo(f"Version: {__version__}")
             typer.Exit(0)
