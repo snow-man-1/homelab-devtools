@@ -9,11 +9,11 @@ from typing import Any
 
 import pytest
 
-from src.homelab_devtools.cli_factory import CliFactory
-from src.homelab_devtools.commands.base_command import BaseCommand
-from src.homelab_devtools.decorators import as_typer_command
-from src.homelab_devtools.errors import BusinessLogicError, ExternalError, InputError
-from src.homelab_devtools.logger_factory import LoggerFactory
+from homelab_devtools.cli_factory import CliFactory
+from homelab_devtools.commands.base_command import BaseCommand
+from homelab_devtools.decorators import as_typer_command
+from homelab_devtools.errors import BusinessLogicError, ExternalError, InputError
+from homelab_devtools.logger_factory import LoggerFactory
 
 
 @pytest.fixture
@@ -24,12 +24,21 @@ def cli_factory() -> CliFactory:
 class MockTyper:
     def __init__(self):
         self.registered_commands = []
+        self.registered_callback = None
 
     def command(self, name=None):
         def decorator(method):
             mock_typer_command = MockTyperCommand(method, name or method.__name__)
             self.registered_commands.append(mock_typer_command)
             return mock_typer_command
+
+        return decorator
+
+    def callback(self):
+        def decorator(method):
+            mock_typer_callback = MockTyperCommand(method, method.__name__)
+            self.registered_callback = mock_typer_callback
+            return mock_typer_callback
 
         return decorator
 
@@ -61,16 +70,16 @@ class MockCommand(BaseCommand):
         return
 
     def test_with_user_input_error(self):
-        raise InputError()
+        raise InputError("Test with user input error")
 
     def test_with_business_logic_error(self):
-        raise BusinessLogicError()
+        raise BusinessLogicError("Test with business logic error")
 
     def test_with_external_error(self):
-        raise ExternalError()
+        raise ExternalError("Test with external error")
 
     def test_with_unexpected_error(self):
-        raise Exception()
+        raise Exception("Test with unexpected Error")
 
 
 @pytest.fixture

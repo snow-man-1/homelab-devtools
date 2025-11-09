@@ -7,7 +7,7 @@ Author: snow-man-1
 from pytest import raises
 from pytest_mock import MockerFixture
 
-from src.homelab_devtools.commands.base_command import BaseCommand
+from homelab_devtools.commands.base_command import BaseCommand
 from tests.conftest import MockCommand
 
 
@@ -35,7 +35,7 @@ class TestBaseCommand:
         )
 
         mock_typer_exit = mocker.patch(
-            "src.homelab_devtools.commands.base_command.Typer_Exit",
+            "homelab_devtools.commands.base_command.typer.Exit",
             side_effect=SystemExit,
         )
 
@@ -54,7 +54,7 @@ class TestBaseCommand:
         )
 
         mock_typer_exit = mocker.patch(
-            "src.homelab_devtools.commands.base_command.Typer_Exit",
+            "homelab_devtools.commands.base_command.typer.Exit",
             side_effect=SystemExit,
         )
 
@@ -73,7 +73,7 @@ class TestBaseCommand:
         )
 
         mock_typer_exit = mocker.patch(
-            "src.homelab_devtools.commands.base_command.Typer_Exit",
+            "homelab_devtools.commands.base_command.typer.Exit",
             side_effect=SystemExit,
         )
 
@@ -92,7 +92,7 @@ class TestBaseCommand:
         )
 
         mock_typer_exit = mocker.patch(
-            "src.homelab_devtools.commands.base_command.Typer_Exit",
+            "homelab_devtools.commands.base_command.typer.Exit",
             side_effect=SystemExit,
         )
 
