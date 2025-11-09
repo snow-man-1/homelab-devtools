@@ -9,33 +9,18 @@ from collections.abc import Callable
 import typer
 
 from homelab_devtools.commands.base_command import BaseCommand
+from homelab_devtools.commands.global_command import GlobalCommand
 
 
 class CliFactory:
-    def typer_callback(
-        self,
-        version: bool = typer.Option(
-            None,
-            "--version",
-            "-v",
-            is_eager=True,
-            help="Show version",
-        ),
-    ) -> None:
-        if version:
-            typer.echo("Test version: 0.0.0")
-            typer.Exit(0)
-
     def create_cli_app(self) -> typer.Typer:
         """Factory method to create a Typer Cli app
 
         Returns:
             Typer: the main Typer instance conainting all sub commands out of the command objects
         """
-        main_cli_app = typer.Typer(invoke_without_command=True)
-
-        # setup typer callback
-        main_cli_app.callback()(self.typer_callback)
+        global_command = GlobalCommand()
+        global_command.prepare_base_typer()
 
         # setup commands as sub typer
         command_list = self.setup_commands()
@@ -44,8 +29,8 @@ class CliFactory:
             prepared_typer = self.prepare_typer_with_items(built_commands, command.app)
 
             command.app = prepared_typer
-            main_cli_app.add_typer(prepared_typer)
-        return main_cli_app
+            global_command.app.add_typer(prepared_typer)
+        return global_command.app
 
     def build_commands(self, command: BaseCommand) -> dict[str, Callable]:
         cli_commands = self.get_cli_commands_of_command(command)
