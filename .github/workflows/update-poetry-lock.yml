@@ -1,0 +1,55 @@
+name: Automatically update the poetry lock
+on:
+  pull_request:
+    paths:
+      - 'pyproject.toml'
+
+env:
+  PYTHON_VERSION: 3.12
+
+jobs:
+  update-poetry-lock:
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout Pull Request
+        id: checkout-pull-request
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.head_ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Composite to install poetry
+        uses: ./.github/actions/setup-python-env
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          install-dependencies: false
+
+      - name: Update poetry.lock
+        run: poetry lock --no-update
+
+      - name: Check if poetry.lock needs an update
+        id: check-changes-in-poetry-lock
+        run: |
+          if git diff --quiet poetry.lock; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit changes if poetry.lock changed
+        if: steps.check-changes-in-poetry-lock.outputs.changed == 'true'
+        run: |
+           git config user.name "github-actions[bot]"
+           git config user.email "github-actions[bot]@users.noreply.github.com"
+           git add poetry.lock
+           git commit -m "chore: update poetry.lock"
+           git push
+
+      - name: End workflow with an echo if there are no changes in poetry.lock
+        if: steps.check-changes-in-poetry-lock.outputs.changed == 'false'
+        run: echo "poetry.lock is already up to date."
