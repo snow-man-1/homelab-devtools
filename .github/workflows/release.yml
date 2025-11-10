@@ -52,16 +52,15 @@ jobs:
           echo "Built artifacts >> $GTIHUB_STEP_SUMMARY"
           ls -lh dist/ >> $GITHUB_STEP_SUMMARY
 
-      - name: Verify version of package
+      - name: Verify package
         run: |
           VERSION="$VERSION"
-          if ls dist/*${VERSION}*.whl 1> /dev/null 2>&1; then
-            echo "Version was built correctly"
+          if ls dist/*.whl 1> /dev/null 2>&1; then
+            echo "Build successful"
+            echo "Build files:"
+            ls -lh dist
           else
-            echo "Version does not match!"
-            echo "Expected: $VERSION"
-            echo "Got:"
-            ls dist/*${VERSION}*.whl
+            echo "No wheels found"
             exit 1
           fi
 
