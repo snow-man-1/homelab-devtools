@@ -4,8 +4,58 @@ updates:
     directory: /
     schedule:
       interval: monthly
+      day: monday
+      time: "09:00"
+      timezone: Europe/Berlin
+
+    rebase-strategy: auto
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+      - python
+    groups:
+      production-dependencies:
+        patterns:
+          - "typer*"
+        update-types:
+          - minor
+          - patch
+      development-dependencies:
+        patterns:
+          - "pytest*"
+          - "mypy*"
+          - "ruff*"
+          - "bandit*"
+          - "safety*"
+          - "pre-commit*"
+        update-types:
+          - minor
+          - patch
+    # ignore major updates to prevent breaking changes
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - version-update:semver-major
 
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: monthly
+      day: monday
+      time: "09:00"
+      timezone: Europe/Berlin
+
+    open-pull-requests-limit: 5
+    rebase-strategy: auto
+    labels:
+      - dependencies
+      - github-actions
+
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+        update-types:
+          - major
+          - minor
+          - patch
