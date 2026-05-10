@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Checkout Code
         id: checkout-code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Composite to setup python env
         uses: ./.github/actions/setup-python-env
@@ -35,7 +35,7 @@ jobs:
               --cov-report=html
 
       - name: Upload coverage artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: coverage-report
@@ -48,7 +48,7 @@ jobs:
     steps:
       - name: Checkout Code
         id: checkout-code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Composite to setup python env
         uses: ./.github/actions/setup-python-env
@@ -71,7 +71,7 @@ jobs:
     steps:
       - name: Checkout Code
         id: checkout-code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Composite to setup python env
         uses: ./.github/actions/setup-python-env
