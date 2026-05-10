@@ -80,5 +80,5 @@ jobs:
           no-root: false
           install-dev-dependencies: false
 
-      - name: Run safety (security check for dependencies)
-        run: poetry run safety scan
+      - name: Run pip-audit (security check for dependencies)
+        run: poetry run pip-audit
