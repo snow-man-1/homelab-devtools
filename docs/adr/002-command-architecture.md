@@ -1,7 +1,11 @@
 # ADR-002 Command Architecture
 
 ## Status
-Accepted
+Status: Superseded by [ADR-007](007-simplified-command-architecture)
+Date: 15.09.2025
+Superseded Date: 09.05.2026
+
+
 
 ## Context
 In this cli we need a separation of business logic and typer/cli specific implementation in order to
