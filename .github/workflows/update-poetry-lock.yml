@@ -30,7 +30,7 @@ jobs:
           install-dependencies: false
 
       - name: Update poetry.lock
-        run: poetry lock --no-update
+        run: poetry update --lock
 
       - name: Check if poetry.lock needs an update
         id: check-changes-in-poetry-lock
