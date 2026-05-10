@@ -5,7 +5,8 @@ Status: Accepted
 Date: 09.05.2026
 
 ## Context
-The current command architecture based on the `BaseCommand` class creates too much complexity for the cli layer.
+The current command architecture based on the `BaseCommand` class creates too much complexity for the cli layer. Also typer already 
+has these features already.
 
 ## Decision
 The architecture is based on three layers:
