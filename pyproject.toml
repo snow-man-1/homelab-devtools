@@ -12,6 +12,9 @@ packages = [
 [tool.poetry.scripts]
 homelab = "homelab_devtools.main:start_cli"
 
+[tool.poetry.requires-plugins]
+poetry-plugin-export = ">=1.8"
+
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
@@ -19,7 +22,6 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.dependencies]
 python = ">=3.12, <3.13"
 typer = ">=0.20,<0.26"
-pip-audit = "^2.10.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^9.0.3"
@@ -29,6 +31,7 @@ mypy = "^1.18.2"
 ruff = ">=0.14.4,<0.16.0"
 bandit = "^1.8.6"
 pre-commit = "^4.3.0"
+pip-audit = "^2.10.0"
 
 [tool.ruff]
 target-version = "py312"
