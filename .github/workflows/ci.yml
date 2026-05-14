@@ -81,4 +81,6 @@ jobs:
           install-dev-dependencies: false
 
       - name: Run pip-audit (security check for dependencies)
-        run: poetry run pip-audit
+        run: |
+          poetry export --format requirements.txt --output requirements-audit.txt --without-hashes
+          poetry run pip-audit -r requirements-audit.txt
