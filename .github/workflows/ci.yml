@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: Checkout Code
         id: checkout-code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Composite to setup python env
         uses: ./.github/actions/setup-python-env
@@ -48,7 +48,7 @@ jobs:
     steps:
       - name: Checkout Code
         id: checkout-code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Composite to setup python env
         uses: ./.github/actions/setup-python-env
@@ -71,7 +71,7 @@ jobs:
     steps:
       - name: Checkout Code
         id: checkout-code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Composite to setup python env
         uses: ./.github/actions/setup-python-env
